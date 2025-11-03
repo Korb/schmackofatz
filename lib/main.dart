@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart' hide Element;
+import 'package:html/dom.dart' hide Text;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Schmackofatz',
       theme: ThemeData(
         brightness: Brightness.light,
         useMaterial3: true,
@@ -82,177 +82,177 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        initialIndex: 0,
-        length: 6,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+      initialIndex: 0,
+      length: 6,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
               const Text("Speiseplan Leipzig "),
               Flexible(child: Text(getMensaName(), style: const TextStyle(fontSize: 10),))
             ],),
-            actions: [IconButton(
-                onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context)
-                    {
-                      return SizedBox(
+          actions: [IconButton(
+            onPressed: () {
+              showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context)
+                  {
+                    return SizedBox(
                         height: 400,
                         child: SingleChildScrollView(child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                          Column(
-                          children: <Widget>[
-                        RadioListTile<Mensen>(
-                          title: const Text('Mensa am Park'),
-                            value: Mensen.ampark,
-                            groupValue: _mensen,
-                              onChanged: (Mensen? value) {
-                                MySettings.config["location"] = "106";
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  _mensen = value;
-                                });}
-                          ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa Peterssteinweg'),
-                                value: Mensen.petersteinweg,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "111";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                              ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa am Elsterbecken'),
-                                value: Mensen.elsterbecken,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "115";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                            ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa Academica'),
-                                value: Mensen.academica,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "118";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                            ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa am Medizincampus'),
-                                value: Mensen.medizin,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "162";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                            ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa am Botanischen Garten'),
-                                value: Mensen.botanischergarten,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "127";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                            ),
-                            RadioListTile<Mensen>(
-                              title: const Text('Mensa an den Tierkliniken'),
-                                value: Mensen.tierkliniken,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "170";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                              ),
-                            RadioListTile(
-                              title: const Text('Mensa Schönauer Straße'),
-                                value: Mensen.schoenauer,
-                                groupValue: _mensen,
-                                  onChanged: (Mensen? value) {
-                                    Navigator.of(context).pop();
-                                    MySettings.config["location"] = "140";
-                                    setState(() {
-                                      _mensen = value;
-                                    });}
-                              ),
-                            RadioListTile(
-                              title: const Text('Cafeteria Dittrichring'),
-                                value: Mensen.dittrichring,
-                                groupValue: _mensen,
-                                onChanged: (Mensen? value) {
-                                  Navigator.of(context).pop();
-                                  MySettings.config["location"] = "153";
-                                  setState(() {
-                                  _mensen = value;
-                                  });}
-                              ),
+                              Column(
+                                children: <Widget>[
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa am Park'),
+                                      value: Mensen.ampark,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        MySettings.config["location"] = "106";
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa Peterssteinweg'),
+                                      value: Mensen.petersteinweg,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "111";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa am Elsterbecken'),
+                                      value: Mensen.elsterbecken,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "115";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa Academica'),
+                                      value: Mensen.academica,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "118";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa am Medizincampus'),
+                                      value: Mensen.medizin,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "162";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa am Botanischen Garten'),
+                                      value: Mensen.botanischergarten,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "127";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile<Mensen>(
+                                      title: const Text('Mensa an den Tierkliniken'),
+                                      value: Mensen.tierkliniken,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "170";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile(
+                                      title: const Text('Mensa Schönauer Straße'),
+                                      value: Mensen.schoenauer,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "140";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
+                                  RadioListTile(
+                                      title: const Text('Cafeteria Dittrichring'),
+                                      value: Mensen.dittrichring,
+                                      groupValue: _mensen,
+                                      onChanged: (Mensen? value) {
+                                        Navigator.of(context).pop();
+                                        MySettings.config["location"] = "153";
+                                        setState(() {
+                                          _mensen = value;
+                                        });}
+                                  ),
 
-                        ],
+                                ],
 
-                          )],
+                              )],
                           ),
                         ),
-                      ));
-                    });
-                },
-                icon: const Icon(Icons.location_on_outlined),
-            )],
-            bottom: TabBar(
+                        ));
+                  });
+            },
+            icon: const Icon(Icons.location_on_outlined),
+          )],
+          bottom: TabBar(
               isScrollable: true,
-                tabs: <Widget>[
-                  const Tab(
+              tabs: <Widget>[
+                const Tab(
                     text: "Heute"
-                  ),
-                  const Tab(
-                      text: "Morgen"
-                  ),
-                  Tab(
-                      text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 2)))
-                  ),
-                  Tab(
-                      text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 3)))
-                  ),
-                  Tab(
-                      text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 4)))
-                  ),
-                  Tab(
-                      text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 5)))
-                  ),
-                ]
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now())),
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 1)))),
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 2)))),
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 3)))),
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 4)))),
-              MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 5)))),
-            ],
-
+                ),
+                const Tab(
+                    text: "Morgen"
+                ),
+                Tab(
+                    text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 2)))
+                ),
+                Tab(
+                    text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 3)))
+                ),
+                Tab(
+                    text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 4)))
+                ),
+                Tab(
+                    text: DateFormat('dd.MM.').format(DateTime.now().add(const Duration(days: 5)))
+                ),
+              ]
           ),
         ),
+        body: TabBarView(
+          children: [
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now())),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 1)))),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 2)))),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 3)))),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 4)))),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 5)))),
+          ],
+
+        ),
+      ),
     );
 
   }
@@ -261,25 +261,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
+
 class Meal {
   final String title;
   final String subheadline;
   final String price1;
-  final String price2;
-  final String price3;
   final String type;
   final Icon icon;
-  final List<Variations> variations;
 
   const Meal({
     required this.title,
     required this.subheadline,
     required this.price1,
-    required this.price2,
-    required this.price3,
     required this.type,
     required this.icon,
-    required this.variations,
   });
 }
 
@@ -317,19 +312,29 @@ class MealList extends StatelessWidget {
     var location = MySettings.config["location"];
     var document = parse(await getDocument(
         "https://www.studentenwerk-leipzig.de/mensen-cafeterien/speiseplan/?location=$location&date=$parsedate"));
-    var mealshtml = document.getElementsByClassName("card type--meal");
-    for (final meal in mealshtml) {
+    var mealshtml = document.getElementById("page-content");
+    for (final meal in mealshtml!.children[0].children[0].children.last.children[3].children) {
       String type = meal.children[0].children[0].text;
       String name = meal.children[1].text;
-      var components = meal.getElementsByClassName("meal-components");
-      var prices = meal.getElementsByClassName("meal-prices");
+      List<Element> prices;
+      String components = "";
+      if (type == "Pastateller" || type == "Gemüsebeilage" || type == "Sättigungsbeilage" || type == "Pizza" || type == "Grill") {
+        prices = meal.children[2].children;
+      } else {
+        prices = meal.children[3].children;
+        components = meal.children[2].text;
+      }
       String price = "";
       for (final priceElem in prices) {
-        price = price + priceElem.text;
+        price = (price + priceElem.text);
       }
-      String subheadline = "";
-      for (final component in components) {
-        subheadline = subheadline + component.text;
+      String? subheadline = "";
+      if (type == "Pastateller" || type == "Pizza" || type == "Grill") {
+        for (final submeal in meal.children[3].children.last.children) {
+          components = ("$components${"${submeal.children[0].text}\n"}");
+        }
+      } else {
+        subheadline = components;
       }
       IconData chosenicon = Icons.local_dining;
       if (type == "Fleischgericht") {
@@ -346,25 +351,10 @@ class MealList extends StatelessWidget {
       } else if (type == "Sättigungsbeilage" || type == "Gemüsebeilage") {
         subheadline = "Beilage";
       }
-
-        var variations = meal.getElementsByClassName("meal-subitem");
-        List<Variations> varia = [];
-        for (final variation in variations) {
-          varia.add(Variations(name: variation.children[0].text));
-        }
-
-        if (subheadline == "") {
-          for (final variation in variations) {
-            subheadline = "$subheadline${variation.children[0].text}\n";
-          }
-        }
         meals.add(Meal(title: name,
-            subheadline: subheadline,
+            subheadline: components,
             price1: price,
-            price2: "2,66",
-            price3: "3,99",
             type: type,
-            variations: varia,
             icon: Icon(chosenicon)));
       }
     return meals;
@@ -413,7 +403,20 @@ class MealList extends StatelessWidget {
             builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
-                    return const Center(child: Text("error"));
+                    // Gib den Fehler in der Konsole aus, um alle Details zu sehen
+                    print(snapshot.error);
+                    print(snapshot.stackTrace);
+
+                    // Zeige eine nützlichere Fehlermeldung auf dem Bildschirm an
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          "Fehler beim Laden der Daten:\n\n${snapshot.error}",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
                   } else if (snapshot.hasData) {
                     final data = snapshot.data as List<Widget>;
                     return Column(children: data);
