@@ -313,50 +313,73 @@ class MealList extends StatelessWidget {
     var document = parse(await getDocument(
         "https://www.studentenwerk-leipzig.de/mensen-cafeterien/speiseplan/?location=$location&date=$parsedate"));
     var mealshtml = document.getElementById("page-content");
-    for (final meal in mealshtml!.children[0].children[0].children.last.children[3].children) {
-      String type = meal.children[0].children[0].text;
-      String name = meal.children[1].text;
-      List<Element> prices;
-      String components = "";
-      if (type == "Pastateller" || type == "Gemüsebeilage" || type == "Sättigungsbeilage" || type == "Pizza" || type == "Grill") {
-        prices = meal.children[2].children;
-      } else {
-        prices = meal.children[3].children;
-        components = meal.children[2].text;
-      }
-      String price = "";
-      for (final priceElem in prices) {
-        price = (price + priceElem.text);
-      }
-      String? subheadline = "";
-      if (type == "Pastateller" || type == "Pizza" || type == "Grill") {
-        for (final submeal in meal.children[3].children.last.children) {
-          components = ("$components${"${submeal.children[0].text}\n"}");
+
+    if (mealshtml == null) {
+      meals = [];
+    }
+
+    var mealContainer = mealshtml?.children[0].children[0].children.last.children[3].children;
+    for (final meal in mealContainer!) {
+      try {
+        String type = meal.children[0].children[0].text;
+        String name = meal.children[1].text;
+        List<Element> prices;
+        String components = "";
+        if (type == "Pastateller" || type == "Gemüsebeilage" ||
+            type == "Sättigungsbeilage" || type == "Pizza" || type == "Grill") {
+          prices = meal.children[2].children;
+        } else {
+          prices = meal.children[3].children;
+          components = meal.children[2].text;
         }
-      } else {
-        subheadline = components;
-      }
-      IconData chosenicon = Icons.local_dining;
-      if (type == "Fleischgericht") {
-        chosenicon = Icons.kebab_dining;
-      } else if (type == "Fischgericht") {
-        chosenicon = Icons.phishing;
-      } else if (type == "Vegetarisches Gericht") {
-        chosenicon = Icons.egg;
-      } else if (type == "Veganes Gericht") {
-        chosenicon = Icons.eco;
-      } else if (type == "Pastateller") {
-        chosenicon = Icons.ramen_dining;
-        subheadline = "";
-      } else if (type == "Sättigungsbeilage" || type == "Gemüsebeilage") {
-        subheadline = "Beilage";
-      }
+        String price = "";
+        for (final priceElem in prices) {
+          price = (price + priceElem.text);
+        }
+        String? subheadline = "";
+        if (type == "Pastateller" || type == "Pizza") {
+          for (final submeal in meal.children[3].children.last.children) {
+            components = ("$components${"${submeal.children[0].text}\n"}");
+          }
+        } else if (type == "Grill") {
+          for (final submeal in meal.children[2].children.last.children.last.children) {
+            components = ("$components${"${submeal.children[0].text}\)}\n"}");
+          }
+          price = "";
+        }  else {
+          subheadline = components;
+        }
+        IconData chosenicon = Icons.local_dining;
+        if (type == "Fleischgericht") {
+          chosenicon = Icons.kebab_dining;
+        } else if (type == "Fischgericht") {
+          chosenicon = Icons.phishing;
+        } else if (type == "Vegetarisches Gericht") {
+          chosenicon = Icons.egg;
+        } else if (type == "Veganes Gericht") {
+          chosenicon = Icons.eco;
+        } else if (type == "Pastateller") {
+          chosenicon = Icons.ramen_dining;
+          subheadline = "";
+        } else if (type == "Sättigungsbeilage" || type == "Gemüsebeilage") {
+          subheadline = "Beilage";
+        }
         meals.add(Meal(title: name,
-            subheadline: components,
+            subheadline: subheadline,
             price1: price,
             type: type,
             icon: Icon(chosenicon)));
+      } catch (e) {
+        print("--- FEHLER BEIM PARSEN EINES GERICHTS ---");
+        print("Fehlermeldung: $e");
+        // Gib das HTML des problematischen Elements aus, um es zu analysieren
+        print("Problem-HTML: ${meal.outerHtml}");
+        print("-----------------------------------------");
+        // Optional: die Schleife fortsetzen, um andere, gültige Gerichte trotzdem zu laden
+        // continue;
       }
+
+    }
     return meals;
   }
 
@@ -390,9 +413,17 @@ class MealList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime date = DateFormat("yyyy-MM-dd").parse(parsedate);
-    bool isItSunday = date.day == DateTime.sunday;
-    if (isItSunday == true) {
+    if (date.weekday == DateTime.sunday) {
       return const Center(child: Text("Sonntags gibt's kein Essen!"));
+    }
+    if (date.weekday == DateTime.saturday) {
+      return const Center(child: 
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+          child: Text("Ob vegetarisch, vegan, mit Fleisch oder Fisch – bei uns findest du genau das, was du suchst. Genieße frische Salate, köstliche Desserts und leckere Kuchen. Für jeden Geschmack ist etwas dabei!"),
+        ),
+            
+      );
     }
 
     return SingleChildScrollView(
