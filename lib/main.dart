@@ -3,6 +3,10 @@ import 'package:html/dom.dart' hide Text;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+
+
+const String version = "2.0.0";
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +59,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Mensen? _mensen = Mensen.ampark;
+  Key _tabBarViewKey = UniqueKey();
+
+  void _reloadMealLists() { // <-- NEUE METHODE
+    setState(() {_tabBarViewKey = UniqueKey();
+    });
+  }
 
 
   String getMensaName () {
@@ -89,10 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text("Speiseplan Leipzig "),
-              Flexible(child: Text(getMensaName(), style: const TextStyle(fontSize: 10),))
+              Text(getMensaName()),
             ],),
-          actions: [IconButton(
+          actions: [
+            IconButton(
             onPressed: () {
               showModalBottomSheet<void>(
                   context: context,
@@ -216,7 +226,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
             },
             icon: const Icon(Icons.location_on_outlined),
-          )],
+          ),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AboutDialog());
+              },
+              icon: const Icon(Icons.info_outline),
+            ),
+          ],
+
           bottom: TabBar(
               isScrollable: true,
               tabs: <Widget>[
@@ -242,13 +263,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: TabBarView(
+          key: _tabBarViewKey,
           children: [
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now())),
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 1)))),
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 2)))),
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 3)))),
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 4)))),
-            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 5)))),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now()), onReload: _reloadMealLists,),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 1))), onReload: _reloadMealLists),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 2))), onReload: _reloadMealLists ),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 3))), onReload: _reloadMealLists),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 4))), onReload: _reloadMealLists),
+            MealList(parsedate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 5))), onReload: _reloadMealLists),
           ],
 
         ),
@@ -289,7 +311,8 @@ class Variations {
 
 class MealList extends StatelessWidget {
   final String parsedate;
-  const MealList({super.key, required this.parsedate});
+  final VoidCallback onReload;
+  const MealList({super.key, required this.parsedate, required this.onReload});
 
 
   Future<String> getDocument(String url) async {
@@ -303,7 +326,7 @@ class MealList extends StatelessWidget {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load data');
     }
   }
 
@@ -324,45 +347,63 @@ class MealList extends StatelessWidget {
         String type = meal.children[0].children[0].text;
         String name = meal.children[1].text;
         List<Element> prices;
-        String components = "";
+        List<String> components = [];
         if (type == "Pastateller" || type == "Gemüsebeilage" ||
             type == "Sättigungsbeilage" || type == "Pizza" || type == "Grill") {
           prices = meal.children[2].children;
         } else {
           prices = meal.children[3].children;
-          components = meal.children[2].text;
+          components.add(meal.children[2].text.trim());
         }
-        String price = "";
-        for (final priceElem in prices) {
-          price = (price + priceElem.text);
-        }
+        String price = prices[0].text;
+
         String? subheadline = "";
         if (type == "Pastateller" || type == "Pizza") {
           for (final submeal in meal.children[3].children.last.children) {
-            components = ("$components${"${submeal.children[0].text}\n"}");
+            if (submeal.children[0].text.isNotEmpty) {
+              components.add(submeal.children[0].text
+                  .replaceAll(RegExp(r'  \b(?!Vegan\b|Vegetarisch\b).*'), "")
+                  .replaceAll("Vegan", "🥕")
+                  .replaceAll("Vegetarisch", "🧀").trim());
+            }
           }
+
         } else if (type == "Grill") {
-          for (final submeal in meal.children[2].children.last.children.last.children) {
-            components = ("$components${"${submeal.children[0].text}\)}\n"}");
+          for (final submeal in meal.children.last.children.last.children) {
+            components.add(submeal.children[0].text.trim());
           }
           price = "";
-        }  else {
-          subheadline = components;
         }
+        subheadline = components.join("\n");
         IconData chosenicon = Icons.local_dining;
-        if (type == "Fleischgericht") {
-          chosenicon = Icons.kebab_dining;
-        } else if (type == "Fischgericht") {
-          chosenicon = Icons.phishing;
-        } else if (type == "Vegetarisches Gericht") {
-          chosenicon = Icons.egg;
-        } else if (type == "Veganes Gericht") {
-          chosenicon = Icons.eco;
-        } else if (type == "Pastateller") {
-          chosenicon = Icons.ramen_dining;
-          subheadline = "";
-        } else if (type == "Sättigungsbeilage" || type == "Gemüsebeilage") {
-          subheadline = "Beilage";
+        switch(type) {
+          case "Fleischgericht":
+            chosenicon = Icons.kebab_dining;
+            break;
+          case "Fischgericht":
+            chosenicon = Icons.phishing;
+            break;
+          case "Vegetarisches Gericht":
+            chosenicon = Icons.egg;
+            break;
+          case "Veganes Gericht":
+            chosenicon = Icons.eco;
+            break;
+          case "Pastateller":
+            chosenicon = Icons.ramen_dining;
+            break;
+          case "Grill":
+            chosenicon = Icons.outdoor_grill;
+            break;
+          case "Pizza":
+            chosenicon = Icons.local_pizza;
+            break;
+          case "Gemüsebeilage":
+            chosenicon = Icons.grass;
+            break;
+          case "Sättigungsbeilage":
+            chosenicon = Icons.fastfood;
+            break;
         }
         meals.add(Meal(title: name,
             subheadline: subheadline,
@@ -384,31 +425,43 @@ class MealList extends StatelessWidget {
   }
 
   Future<List<Widget>> getCards() async {
-      List<Card> cards = [];
-      for (final meal in await getMeals(DateTime.now())) {
-        cards.add(
-            Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                        leading: meal.icon,
-                        title: Text(meal.title),
-                        subtitle: Text(meal.subheadline),
+    List<Card> cards = [];
+    for (final meal in await getMeals(DateTime.now())) {
+      cards.add(
+          Card(
+            child: Stack(
+              children: [
+                ListTile(
+                  leading: meal.icon,
+                  title: Padding(
+                    padding: const EdgeInsets.only(right: 50.0),
+                    child: Text(meal.title)
+                  ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, right: 50.0),
+                    child: Text(meal.subheadline),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 12,
+                  child: Text(
+                    meal.price1,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black54,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(meal.price1),
-                        const SizedBox(width: 8),
-                      ],
-                    )
-                  ],
-                )
-            ));
-      }
-      return cards;
+                  ),
+                ),
+              ],
+            ),
+          )
+      );
+    }
+    return cards;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -434,23 +487,38 @@ class MealList extends StatelessWidget {
             builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
-                    // Gib den Fehler in der Konsole aus, um alle Details zu sehen
-                    print(snapshot.error);
-                    print(snapshot.stackTrace);
-
-                    // Zeige eine nützlichere Fehlermeldung auf dem Bildschirm an
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          "Fehler beim Laden der Daten:\n\n${snapshot.error}",
-                          textAlign: TextAlign.center,
-                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Fehler beim Laden der Daten:\n\n${snapshot.error}",
+                              textAlign: TextAlign.center,
+                            ),
+                            Padding(
+                              padding: EdgeInsetsGeometry.all(16),
+                              child:
+                                TextButton.icon(
+                                    onPressed: onReload,
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text("Neu laden"),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Theme.of(context).colorScheme.primary,
+                                      foregroundColor: Colors.white,
+                                    )
+                                )
+                            )
+                          ]
+                        )
                       ),
                     );
                   } else if (snapshot.hasData) {
                     final data = snapshot.data as List<Widget>;
-                    return Column(children: data);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      child: Column(children: data)
+                    );
                   }
                 }
                 return const Center(
@@ -461,4 +529,94 @@ class MealList extends StatelessWidget {
     ));
 
   }
+}
+
+class AboutDialog extends StatelessWidget{
+  const AboutDialog({super.key});
+
+
+
+
+  @override
+  Widget build(BuildContext context,) {
+    return AlertDialog(
+      title: Row(crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+        Text("Schmackofatz"),
+        Text(" v$version", style: TextStyle(
+          fontSize: 20,
+          color: Colors.grey[600],
+        ),)
+      ],),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Column(
+              spacing: 0,
+              children: [
+                TextButton.icon(onPressed: () {},
+                    icon: Icon(Icons.question_mark),
+                    label: Row(
+                      children: [
+                        Expanded(child: Text("Speiseplan für Leipziger Student*innen")),
+                      ],
+                    ),
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                    ),
+                ),
+                TextButton.icon(onPressed: () {_launchUrl("https://github.com/mattipunkt/schmackofatz");},
+                  icon: Icon(Icons.code),
+                  label: Row(
+                    children: [
+                      Text("GitHub"),
+                      Spacer()
+                    ],
+                  ),
+                  style: TextButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                  )
+                ),
+                TextButton.icon(onPressed: () {_launchUrl("https://github.com/mattipunkt/schmackofatz/issues/new/choose");},
+                    icon: Icon(Icons.flash_on),
+                    label: Row(
+                      children: [
+                        Text("Fehler melden"),
+                        Spacer()
+                      ],
+                    ),
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                    )
+                ),
+                TextButton.icon(onPressed: () {_launchUrl("https://www.reddit.com/r/dopsball/comments/1kgiosj/gekommen_um_zu_arbeiten_geblieben_um_zu_quatschen/");},
+                    icon: Icon(Icons.favorite),
+                    label: Row(
+                      children: [
+                        Text("Made with Love at Offener Inforaum"),
+                        Spacer()
+                      ],
+                    ),
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                    )
+                ),
+              ],
+            ),
+          )
+
+        ]
+      ),
+    );
+  }
+
+  Future<void> _launchUrl(String openUrl) async {
+    final Uri url = Uri.parse(openUrl);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch url');
+    }
+  }
+
 }
