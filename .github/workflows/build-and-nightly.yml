@@ -1,7 +1,5 @@
 on:
-  push:
-    branches:
-      - master
+  - dev
 
 jobs:
   main:
@@ -17,7 +15,7 @@ jobs:
     - name: Set version name
       run: |
         PUBSPEC_VERSION="$(grep -oP 'version: \K.+' pubspec.yaml)"
-        VERSION_NAME="v${PUBSPEC_VERSION}"
+        VERSION_NAME="${PUBSPEC_VERSION}-${GITHUB_SHA:0:7}"
         echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_ENV
 
     - name: Build APKs
@@ -32,8 +30,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: andelf/nightly-release@main
       with:
-        prerelease: false
-        tag_name: stable
+        prerelease: true
+        tag_name: nightly
         name: ${{ env.VERSION_NAME }}
         files: build/app/outputs/flutter-apk/*.apk
 
