@@ -1,0 +1,8 @@
+Keep track of the culinary offerings of the Leipzig Student Union with Schmackofatz—the fast, privacy-friendly, and open-source meal plan for your smartphone. Schmackofatz was developed for students and employees in Leipzig who want to know what's on the menu today, tomorrow, or in the coming days at their favorite cafeteria, without any frills.
+Features:
+- Current menus: Accesses the official data from the Leipzig Student Union directly to always show you the latest dishes.
+- All locations: Select your favorite cafeteria from a list of all available locations, from the cafeteria at the park to the Dittrichring cafeteria.
+- Weekly overview: Plan your meals in advance by navigating through the menus for the coming days.
+- Minimalistic & efficient: The app is deliberately kept simple, starts quickly, and focuses on the essentials: food.
+
+Data protection & open source: This app respects your privacy. It is 100% ad-free, without trackers, and does not require any unnecessary permissions. The only network connection that is established is to the Studentenwerk Leipzig server to retrieve the meal plans. As an open source project, the entire source code is publicly available on GitHub. Contributions and suggestions for improvement from the community are very welcome!

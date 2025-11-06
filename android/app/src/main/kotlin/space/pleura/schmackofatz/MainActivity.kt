@@ -1,4 +1,4 @@
-package com.example.schmackofatz
+package space.pleura.schmackofatz
 
 import io.flutter.embedding.android.FlutterActivity
 

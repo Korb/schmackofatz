@@ -1,0 +1,1 @@
+An app to view the meal plan at Leipzig's univeristies.
