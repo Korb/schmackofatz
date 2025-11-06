@@ -35,7 +35,6 @@ class MealList extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.w300,
                       fontStyle: FontStyle.italic,
-                      color: Colors.black54,
                     ),
                   ),
                 ),
