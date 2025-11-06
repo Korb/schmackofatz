@@ -43,7 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Mensen? _mensen = Mensen.ampark;
   Key _tabBarViewKey = UniqueKey();
 
-
   void _reloadMealLists() {
     // <-- NEUE METHODE
     setState(() {

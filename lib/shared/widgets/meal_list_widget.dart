@@ -88,10 +88,12 @@ class MealList extends StatelessWidget {
               );
             } else if (snapshot.hasData) {
               final data = snapshot.data as List<Widget>;
-              return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(children: data));
+              return SingleChildScrollView(
+                child: Padding(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Column(children: data)),
+              );
             }
           }
           return const Center(
