@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutDialog extends StatelessWidget{
   const AboutDialog({super.key});
 
-  static const String version = "2.0.1";
+  static const String version = "2.0.2";
 
 
   @override
