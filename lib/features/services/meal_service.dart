@@ -102,6 +102,9 @@ Future<List<Meal>> getMeals(String parsedate) async {
         case "Sättigungsbeilage":
           chosenicon = Icons.fastfood;
           break;
+        case "Regio-Teller":
+          chosenicon = Icons.agriculture;
+          break;
       }
       meals.add(Meal(title: name,
           subheadline: subheadline,
