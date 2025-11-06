@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.schmackofatz"
+    namespace = "space.pleura.schmackofatz"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.mukkematti.schmackofatz"
+        applicationId = "space.pleura.schmackofatz"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -37,6 +37,14 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles (for Google Play)
+        includeInBundle = false
+    }
+
 }
 
 flutter {
