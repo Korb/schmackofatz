@@ -13,6 +13,9 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.35.7
     - name: Prepare keystore path
       run: mkdir -p /opt
     - name: Decode Android keystore
