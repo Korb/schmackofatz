@@ -13,12 +13,18 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     - uses: subosito/flutter-action@v2
-
+    - name: Prepare keystore path
+      run: mkdir -p /opt
+    - name: Decode Android keystore
+      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > /opt/key.jks
+    - name: Prepare key.properites
+      run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
     - name: Set version name
       run: |
         PUBSPEC_VERSION="$(grep -oP 'version: \K.+' pubspec.yaml)"
         VERSION_NAME="v${PUBSPEC_VERSION}"
         echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_ENV
+        echo ${{ secrets.KEYSTORE}} 
 
     - name: Build APKs
       run: |
