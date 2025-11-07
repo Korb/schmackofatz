@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:schmackofatz/features/models/meals.dart';
 import '../../features/services/meal_service.dart';
 
 class MealList extends StatelessWidget {
@@ -8,9 +9,10 @@ class MealList extends StatelessWidget {
   const MealList({super.key, required this.parsedate, required this.onReload});
 
   Future<List<Widget>> getCards() async {
-    List<Card> cards = [];
+    Map<String, Card> cards = {};
+    // List<Card> cards = [];
     for (final meal in await getMeals(parsedate)) {
-      cards.add(Card(
+      cards[meal.title] = (Card(
         child: Stack(
           children: [
             ListTile(
@@ -38,7 +40,7 @@ class MealList extends StatelessWidget {
         ),
       ));
     }
-    return cards;
+    return cards.values.toList();
   }
 
   @override
