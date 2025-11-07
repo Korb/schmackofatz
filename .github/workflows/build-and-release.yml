@@ -16,7 +16,7 @@ jobs:
     - name: Prepare keystore path
       run: mkdir -p /opt
     - name: Decode Android keystore
-      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > /opt/key.jks
+      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > /opt/upload-keystore.jks
     - name: Prepare key.properites
       run: echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
     - name: Set version name
@@ -29,9 +29,12 @@ jobs:
     - name: Build APKs
       run: |
         flutter build apk --build-name="$VERSION_NAME" --release --target-platform android-arm,android-arm64 --split-per-abi
-        # and rename them
-        sudo apt-get install -y rename
-        rename 's/app-/schmackofatz-app-/' build/app/outputs/flutter-apk/*.apk
+    - name: Rename APK file
+      run: |
+        for file in build/app/outputs/flutter-apk/app-*.apk; do
+          newfile="${file/app-/schmackofatz-app-}"
+        mv "$file" "$newfile"
+        done
     - name: Upload release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
